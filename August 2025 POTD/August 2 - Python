@@ -1,0 +1,59 @@
+Question:  Given an array arr[] and an integer k, the task is to find the length of longest subarray in which the count of elements greater than k is more than the count of elements less than or equal to k.
+
+Examples:
+
+          Input: arr[] = [1, 2, 3, 4, 1], k = 2
+          Output: 3
+          Explanation: The subarray [2, 3, 4] or [3, 4, 1] satisfy the given condition, and there is no subarray of length 4 or 5 which will hold the given condition, so the answer is 3.
+
+          Input: arr[] = [6, 5, 3, 4], k = 2
+          Output: 4
+          Explanation: In the subarray [6, 5, 3, 4], there are 4 elements > 2 and 0 elements <= 2, so it is the longest subarray.
+
+Solution 1 (Best Case Complexity) 
+
+          class Solution:
+    def longestSubarray(self, arr, k):
+        t = [1 if i > k else -1 for i in arr]
+        n = len(t)
+        
+        length = 0
+        p = 0
+        
+        prefix_sums = {0: -1}
+        
+        for i in range(n):
+            p += t[i]
+            
+            if p > 0:
+                length = max(length, i + 1)
+            
+            if p not in prefix_sums:
+                prefix_sums[p] = i
+            
+            if p - 1 in prefix_sums:
+                current_length = i - prefix_sums[p - 1]
+                length = max(length, current_length)
+                
+        return length
+
+
+Solution 2 (Worst Case Complexity):
+
+          class Solution:
+    def longestSubarray(self, arr, k):
+        n = len(arr)
+        length = 0
+        for i in range(n):
+            kplus = 0
+            kminus = 0
+            for j in range(i, n):
+                if arr[j] > k:
+                    kplus += 1
+                else:
+                    kminus += 1
+                if kplus > kminus:
+                    current_length = j - i + 1
+                    if current_length > length:
+                        length = current_length
+        return length
